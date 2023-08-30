@@ -1,4 +1,8 @@
 ---
+import { Image } from 'astro:assets'
+import sand from '../images/sand.gif'
+import subway from '../images/subway.gif'
+
 const getNextWeekendDates = (): string => {
   const today = new Date()
   const currentDay = today.getDay()
@@ -47,9 +51,7 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
     <title>co sprzątam?</title>
   </head>
   <body class="bg-black flex flex-col p-4 sm:p-10 text-white items-center">
-    <video autoplay muted loop width="250">
-      <source src="/sand.mp4" type="video/mp4" />
-    </video>
+    <Image src={sand} alt="" width="250" quality="mid" />
 
     <div class="flex flex-col items-center gap-4 my-4">
       <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
@@ -75,8 +77,6 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
       </h2>
     </div>
 
-    <video autoplay muted loop width="250">
-      <source src="/subway.mp4" type="video/mp4" />
-    </video>
+    <Image src={subway} alt="" width="250" quality="low" />
   </body>
 </html>
