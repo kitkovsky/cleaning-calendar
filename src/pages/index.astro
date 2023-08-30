@@ -1,15 +1,82 @@
 ---
+const getNextWeekendDates = (): string => {
+  const today = new Date()
+  const currentDay = today.getDay()
+  const daysUntilSaturday = 6 - currentDay
+  const daysUntilSunday = 7 - currentDay
+
+  const nextSaturday = new Date(today)
+  nextSaturday.setDate(today.getDate() + daysUntilSaturday)
+  const nextSunday = new Date(today)
+  nextSunday.setDate(today.getDate() + daysUntilSunday)
+
+  const nextSaturdayMonth = String(nextSaturday.getMonth() + 1).padStart(2, '0')
+  const nextSundayMonth = String(nextSunday.getMonth() + 1).padStart(2, '0')
+  const nextSaturdayDay = String(nextSaturday.getDate()).padStart(2, '0')
+  const nextSundayDay = String(nextSunday.getDate()).padStart(2, '0')
+
+  return `${nextSaturdayDay}.${nextSaturdayMonth} - ${nextSundayDay}.${nextSundayMonth}`
+}
+
+const getCurrentWeekNumber = (): number => {
+  const today = new Date()
+  const startOfYear = new Date(today.getFullYear(), 0, 1)
+  const daysSinceStartOfYear = Math.floor(
+    (today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24), // ms * s * m * h
+  )
+
+  return Math.ceil((daysSinceStartOfYear + 1) / 7)
+}
+
+const nextWeekend = getNextWeekendDates()
+
+const currentWeekNumber = getCurrentWeekNumber()
+
+const chores = ['wolne', 'schody', 'łazienka']
+const tatianaChore = chores[currentWeekNumber % chores.length]
+const oskarChore = chores[(currentWeekNumber + 1) % chores.length]
+const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>co sprzątam?</title>
+  </head>
+  <body class="bg-black flex flex-col p-4 sm:p-10 text-white items-center">
+    <video autoplay muted loop width="250">
+      <source src="/sand.mp4" type="video/mp4" />
+    </video>
+
+    <div class="flex flex-col items-center gap-4 my-4">
+      <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
+
+      <ul class="bg-gray80 p-2 rounded w-full text-center">
+        <li class="sm:text-xl">
+          <span class="font-bold">tatiana</span>: {tatianaChore}
+        </li>
+        <li class="sm:text-xl">
+          <span class="font-bold">oskar</span>: {oskarChore}
+        </li>
+        <li class="sm:text-xl">
+          <span class="font-bold">oliwer</span>: {oliwerChore}
+        </li>
+      </ul>
+
+      <h2 class="text-xl">
+        {
+          chores.map((chore, idx) =>
+            idx !== chores.length - 1 ? `${chore} -> ` : chore,
+          )
+        }
+      </h2>
+    </div>
+
+    <video autoplay muted loop width="250">
+      <source src="/subway.mp4" type="video/mp4" />
+    </video>
+  </body>
 </html>
