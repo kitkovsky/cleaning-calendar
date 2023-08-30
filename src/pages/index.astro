@@ -50,8 +50,9 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
     <meta name="generator" content={Astro.generator} />
     <title>co sprzątam?</title>
   </head>
+
   <body class="bg-black flex flex-col p-4 sm:p-10 text-white items-center">
-    <Image src={sand} alt="" width="250" quality="mid" />
+    <Image src={sand} alt="" class="h-28 sm:h-36" quality="mid" />
 
     <div class="flex flex-col items-center gap-4 my-4">
       <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
@@ -77,6 +78,6 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
       </h2>
     </div>
 
-    <Image src={subway} alt="" width="250" quality="low" />
+    <Image src={subway} alt="" class='h-72 sm:h-full' quality="low" />
   </body>
 </html>
