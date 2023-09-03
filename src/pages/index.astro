@@ -5,7 +5,7 @@ import subway from '../images/subway.gif'
 
 const getNextWeekendDates = (): string => {
   const today = new Date()
-  const currentDay = today.getDay()
+  const currentDay = (today.getDay() + 6) % 7 + 1
   const daysUntilSaturday = 6 - currentDay
   const daysUntilSunday = 7 - currentDay
 
@@ -37,9 +37,17 @@ const nextWeekend = getNextWeekendDates()
 const currentWeekNumber = getCurrentWeekNumber()
 
 const chores = ['wolne', 'schody', 'łazienka']
-const tatianaChore = chores[currentWeekNumber % chores.length]
-const oskarChore = chores[(currentWeekNumber + 1) % chores.length]
-const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
+const people = ['tatiana', 'oskar', 'Oliwer']
+const size = chores.length
+
+const choresLis =
+  [...Array(size).keys()]
+  .map(i => {
+    let name = people[i]
+    let chore = chores[(currentWeekNumber + i) % size]
+    return <li class="sm:text-xl"><span class="font-bold">{name}</span>: {chore}</li>
+  })
+
 ---
 
 <html lang="pl">
@@ -58,23 +66,11 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
       <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
 
       <ul class="bg-gray80 p-2 rounded w-full text-center">
-        <li class="sm:text-xl">
-          <span class="font-bold">tatiana</span>: {tatianaChore}
-        </li>
-        <li class="sm:text-xl">
-          <span class="font-bold">oskar</span>: {oskarChore}
-        </li>
-        <li class="sm:text-xl">
-          <span class="font-bold">oliwer</span>: {oliwerChore}
-        </li>
+        { choresLis }
       </ul>
 
       <h2 class="text-xl">
-        {
-          chores.map((chore, idx) =>
-            idx !== chores.length - 1 ? `${chore} -> ` : chore,
-          )
-        }
+        { chores.join(" -> ") }
       </h2>
     </div>
 
