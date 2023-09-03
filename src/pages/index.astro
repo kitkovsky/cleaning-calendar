@@ -5,7 +5,7 @@ import subway from '../images/subway.gif'
 
 const getNextWeekendDates = (): string => {
   const today = new Date()
-  const currentDay = (today.getDay() + 6) % 7 + 1
+  const currentDay = ((today.getDay() + 6) % 7) + 1
   const daysUntilSaturday = 6 - currentDay
   const daysUntilSunday = 7 - currentDay
 
@@ -37,17 +37,15 @@ const nextWeekend = getNextWeekendDates()
 const currentWeekNumber = getCurrentWeekNumber()
 
 const chores = ['wolne', 'schody', 'łazienka']
-const people = ['tatiana', 'oskar', 'Oliwer']
+const people = ['tatiana', 'oskar', 'oliwer']
 const size = chores.length
 
-const choresLis =
-  [...Array(size).keys()]
-  .map(i => {
-    let name = people[i]
-    let chore = chores[(currentWeekNumber + i) % size]
-    return <li class="sm:text-xl"><span class="font-bold">{name}</span>: {chore}</li>
-  })
+const choresList = [...Array(size).keys()].map((i) => {
+  const name = people[i]
+  const chore = chores[(currentWeekNumber + i) % size]
 
+  return { name, chore }
+})
 ---
 
 <html lang="pl">
@@ -66,14 +64,20 @@ const choresLis =
       <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
 
       <ul class="bg-gray80 p-2 rounded w-full text-center">
-        { choresLis }
+        {
+          choresList.map(({ name, chore }) => (
+            <li class="sm:text-xl">
+              {name}: {chore}
+            </li>
+          ))
+        }
       </ul>
 
       <h2 class="text-xl">
-        { chores.join(" -> ") }
+        {chores.join(' -> ')}
       </h2>
     </div>
 
-    <Image src={subway} alt="" class='h-72 sm:h-full' quality="low" />
+    <Image src={subway} alt="" class="h-72 sm:h-full" quality="low" />
   </body>
 </html>
