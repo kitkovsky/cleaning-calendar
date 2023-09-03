@@ -3,21 +3,28 @@ import { Image } from 'astro:assets'
 import sand from '../images/sand.gif'
 import subway from '../images/subway.gif'
 
+const toDay = (date: Date): string => String(date.getDate()).padStart(2, '0')
+
+const toMonth = (date: Date): string =>
+  String(date.getMonth() + 1).padStart(2, '0')
+
+const addDays = (date: Date, numOfDays: number): Date => {
+  const newDate = new Date()
+  newDate.setDate(date.getDate() + numOfDays)
+  return newDate
+}
+
 const getNextWeekendDates = (): string => {
   const today = new Date()
-  const currentDay = today.getDay()
-  const daysUntilSaturday = 6 - currentDay
-  const daysUntilSunday = 7 - currentDay
+  const currentDay = ((today.getDay() + 6) % 7) + 1
 
-  const nextSaturday = new Date(today)
-  nextSaturday.setDate(today.getDate() + daysUntilSaturday)
-  const nextSunday = new Date(today)
-  nextSunday.setDate(today.getDate() + daysUntilSunday)
+  const nextSaturday = addDays(today, 6 - currentDay)
+  const nextSunday = addDays(nextSaturday, 1)
 
-  const nextSaturdayMonth = String(nextSaturday.getMonth() + 1).padStart(2, '0')
-  const nextSundayMonth = String(nextSunday.getMonth() + 1).padStart(2, '0')
-  const nextSaturdayDay = String(nextSaturday.getDate()).padStart(2, '0')
-  const nextSundayDay = String(nextSunday.getDate()).padStart(2, '0')
+  const nextSaturdayMonth = toMonth(nextSaturday)
+  const nextSundayMonth = toMonth(nextSunday)
+  const nextSaturdayDay = toDay(nextSaturday)
+  const nextSundayDay = toDay(nextSunday)
 
   return `${nextSaturdayDay}.${nextSaturdayMonth} - ${nextSundayDay}.${nextSundayMonth}`
 }
@@ -32,14 +39,17 @@ const getCurrentWeekNumber = (): number => {
   return Math.ceil((daysSinceStartOfYear + 1) / 7)
 }
 
-const nextWeekend = getNextWeekendDates()
+const isNowWeekend = (): boolean => [0, 6].includes(new Date().getDay())
 
+const nextWeekend = getNextWeekendDates()
 const currentWeekNumber = getCurrentWeekNumber()
 
 const chores = ['wolne', 'schody', 'łazienka']
-const tatianaChore = chores[currentWeekNumber % chores.length]
-const oskarChore = chores[(currentWeekNumber + 1) % chores.length]
-const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
+const people = ['tatiana', 'oskar', 'oliwer']
+const todos = people.map((person, idx) => ({
+  name: person,
+  chore: chores[(currentWeekNumber + idx - 1) % chores.length], // -1 to match the current chores
+}))
 ---
 
 <html lang="pl">
@@ -55,29 +65,25 @@ const oliwerChore = chores[(currentWeekNumber + 2) % chores.length]
     <Image src={sand} alt="" class="h-28 sm:h-36" quality="mid" />
 
     <div class="flex flex-col items-center gap-4 my-4">
-      <h1 class="text-xl sm:text-3xl">następny weekend: {nextWeekend}</h1>
+      <h1 class="text-xl sm:text-3xl">
+        {isNowWeekend() ? 'obecny' : 'następny'} weekend: {nextWeekend}
+      </h1>
 
       <ul class="bg-gray80 p-2 rounded w-full text-center">
-        <li class="sm:text-xl">
-          <span class="font-bold">tatiana</span>: {tatianaChore}
-        </li>
-        <li class="sm:text-xl">
-          <span class="font-bold">oskar</span>: {oskarChore}
-        </li>
-        <li class="sm:text-xl">
-          <span class="font-bold">oliwer</span>: {oliwerChore}
-        </li>
+        {
+          todos.map(({ name, chore }) => (
+            <li class="sm:text-xl">
+              <span class="font-bold">{name}</span>: {chore}
+            </li>
+          ))
+        }
       </ul>
 
       <h2 class="text-xl">
-        {
-          chores.map((chore, idx) =>
-            idx !== chores.length - 1 ? `${chore} -> ` : chore,
-          )
-        }
+        {chores.join(' -> ')}
       </h2>
     </div>
 
-    <Image src={subway} alt="" class='h-72 sm:h-full' quality="low" />
+    <Image src={subway} alt="" class="h-72 sm:h-full" quality="low" />
   </body>
 </html>
