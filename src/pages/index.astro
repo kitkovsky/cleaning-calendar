@@ -2,53 +2,36 @@
 import { Image } from 'astro:assets'
 import sand from '../images/sand.gif'
 import subway from '../images/subway.gif'
+import dayjs from 'dayjs'
+import weekday from 'dayjs/plugin/weekday'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import 'dayjs/locale/pl'
 
-const toDay = (date: Date): string => String(date.getDate()).padStart(2, '0')
+dayjs.extend(weekday)
+dayjs.extend(weekOfYear)
+dayjs.locale('pl')
 
-const toMonth = (date: Date): string =>
-  String(date.getMonth() + 1).padStart(2, '0')
-
-const addDays = (date: Date, numOfDays: number): Date => {
-  const newDate = new Date()
-  newDate.setDate(date.getDate() + numOfDays)
-  return newDate
-}
+const CHORES = ['wolne', 'schody', 'łazienka']
+const PEOPLE = ['tatiana', 'oskar', 'oliwer']
 
 const getNextWeekendDates = (): string => {
-  const today = new Date()
-  const currentDay = ((today.getDay() + 6) % 7) + 1
+  const today = dayjs()
+  const currentWeekdayIdx = dayjs().weekday()
 
-  const nextSaturday = addDays(today, 6 - currentDay)
-  const nextSunday = addDays(nextSaturday, 1)
+  const nextSaturday = today.add(5 - currentWeekdayIdx, 'days')
+  const nextSunday = today.add(6 - currentWeekdayIdx, 'days')
 
-  const nextSaturdayMonth = toMonth(nextSaturday)
-  const nextSundayMonth = toMonth(nextSunday)
-  const nextSaturdayDay = toDay(nextSaturday)
-  const nextSundayDay = toDay(nextSunday)
-
-  return `${nextSaturdayDay}.${nextSaturdayMonth} - ${nextSundayDay}.${nextSundayMonth}`
+  return `${nextSaturday.format('DD.MM')} - ${nextSunday.format('DD.MM')}`
 }
 
-const getCurrentWeekNumber = (): number => {
-  const today = new Date()
-  const startOfYear = new Date(today.getFullYear(), 0, 1)
-  const daysSinceStartOfYear = Math.floor(
-    (today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24), // ms * s * m * h
-  )
-
-  return Math.ceil((daysSinceStartOfYear + 1) / 7)
-}
-
-const isNowWeekend = (): boolean => [0, 6].includes(new Date().getDay())
+const isNowWeekend = (): boolean => [5, 6].includes(new Date().getDay())
 
 const nextWeekend = getNextWeekendDates()
-const currentWeekNumber = getCurrentWeekNumber()
+const currentWeekNumber = dayjs().week()
 
-const chores = ['wolne', 'schody', 'łazienka']
-const people = ['tatiana', 'oskar', 'oliwer']
-const todos = people.map((person, idx) => ({
+const todos = PEOPLE.map((person, idx) => ({
   name: person,
-  chore: chores[(currentWeekNumber + idx - 1) % chores.length], // -1 to match the current chores
+  chore: CHORES[(currentWeekNumber + idx) % CHORES.length],
 }))
 ---
 
@@ -80,7 +63,7 @@ const todos = people.map((person, idx) => ({
       </ul>
 
       <h2 class="text-xl">
-        {chores.join(' -> ')}
+        {CHORES.join(' -> ')}
       </h2>
     </div>
 
