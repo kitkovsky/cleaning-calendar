@@ -2,32 +2,17 @@
 import { Image } from 'astro:assets'
 import sand from '../images/sand.gif'
 import subway from '../images/subway.gif'
-import dayjs from 'dayjs'
-import weekday from 'dayjs/plugin/weekday'
-import weekOfYear from 'dayjs/plugin/weekOfYear'
-import 'dayjs/locale/pl'
-
-dayjs.extend(weekday)
-dayjs.extend(weekOfYear)
-dayjs.locale('pl')
+import {
+  getNextWeekendDates,
+  isNowWeekend,
+  getCurrentWeekNumber,
+} from '../utils/weekend.utils.ts'
 
 const CHORES = ['wolne', 'schody', 'łazienka']
 const PEOPLE = ['tatiana', 'oskar', 'oliwer']
 
-const getNextWeekendDates = (): string => {
-  const today = dayjs()
-  const currentWeekdayIdx = dayjs().weekday()
-
-  const nextSaturday = today.add(5 - currentWeekdayIdx, 'days')
-  const nextSunday = today.add(6 - currentWeekdayIdx, 'days')
-
-  return `${nextSaturday.format('DD.MM')} - ${nextSunday.format('DD.MM')}`
-}
-
-const isNowWeekend = (): boolean => [5, 6].includes(new Date().getDay())
-
 const nextWeekend = getNextWeekendDates()
-const currentWeekNumber = dayjs().week()
+const currentWeekNumber = getCurrentWeekNumber()
 
 const todos = PEOPLE.map((person, idx) => ({
   name: person,
