@@ -17,6 +17,6 @@ export const getNextWeekendDates = (): string => {
   return `${nextSaturday.format('DD.MM')} - ${nextSunday.format('DD.MM')}`
 }
 
-export const isNowWeekend = (): boolean => [5, 6].includes(new Date().getDay())
+export const isNowWeekend = (): boolean => [5, 6].includes(dayjs().weekday())
 
 export const getCurrentWeekNumber = (): number => dayjs().week()
