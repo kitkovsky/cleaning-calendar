@@ -1,0 +1,19 @@
+---
+import dotenv from 'dotenv'
+
+dotenv.config()
+---
+
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>co sprzątam?</title>
+  </head>
+
+  <body class="bg-black flex flex-col p-4 sm:p-10 text-white items-center">
+    <slot />
+  </body>
+</html>

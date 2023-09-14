@@ -1,57 +1,35 @@
 ---
 import { Image } from 'astro:assets'
+import MainLayout from '../components/layouts/MainLayout.astro'
 import sand from '../images/sand.gif'
 import subway from '../images/subway.gif'
-import {
-  getNextWeekendDates,
-  isNowWeekend,
-  getCurrentWeekNumber,
-} from '../utils/weekend.utils.ts'
+import { getTodos } from '../utils/chores.utils'
+import { getNextWeekendDates, isNowWeekend } from '../utils/weekend.utils'
 
-const CHORES = ['wolne', 'schody', 'łazienka']
-const PEOPLE = ['tatiana', 'oskar', 'oliwer']
-
+const todos = await getTodos()
 const nextWeekend = getNextWeekendDates()
-const currentWeekNumber = getCurrentWeekNumber()
-
-const todos = PEOPLE.map((person, idx) => ({
-  name: person,
-  chore: CHORES[(currentWeekNumber + idx) % CHORES.length],
-}))
 ---
 
-<html lang="pl">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>co sprzątam?</title>
-  </head>
+<MainLayout>
+  <Image src={sand} alt="" class="h-28 sm:h-36" quality="mid" />
 
-  <body class="bg-black flex flex-col p-4 sm:p-10 text-white items-center">
-    <Image src={sand} alt="" class="h-28 sm:h-36" quality="mid" />
+  <div class="flex flex-col items-center gap-4 my-4">
+    <h1 class="text-xl sm:text-3xl">
+      {isNowWeekend() ? 'obecny' : 'następny'} weekend: {nextWeekend}
+    </h1>
 
-    <div class="flex flex-col items-center gap-4 my-4">
-      <h1 class="text-xl sm:text-3xl">
-        {isNowWeekend() ? 'obecny' : 'następny'} weekend: {nextWeekend}
-      </h1>
+    <ul class="bg-gray80 p-2 rounded w-full text-center">
+      {
+        todos.map(({ name, chore }) => (
+          <li class="sm:text-xl">
+            <span class="font-bold">{name}</span>: {chore}
+          </li>
+        ))
+      }
+    </ul>
 
-      <ul class="bg-gray80 p-2 rounded w-full text-center">
-        {
-          todos.map(({ name, chore }) => (
-            <li class="sm:text-xl">
-              <span class="font-bold">{name}</span>: {chore}
-            </li>
-          ))
-        }
-      </ul>
+    <h2 class="text-xl">wolne -> schody -> łazienka</h2>
+  </div>
 
-      <h2 class="text-xl">
-        {CHORES.join(' -> ')}
-      </h2>
-    </div>
-
-    <Image src={subway} alt="" class="h-72 sm:h-full" quality="low" />
-  </body>
-</html>
+  <Image src={subway} alt="" class="h-72 sm:h-full" quality="low" />
+</MainLayout>
