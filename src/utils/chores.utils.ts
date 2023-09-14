@@ -4,19 +4,19 @@ import { getCurrentWeekNumber } from '../utils/weekend.utils.ts'
 const PEOPLE = ['tatiana', 'oskar', 'oliwer']
 
 const config = {
-  host: process.env['DB_HOST'] as string,
-  username: process.env['DB_USERNAME'] as string,
-  password: process.env['DB_PASSWORD'] as string,
+  host: import.meta.env['PUBLIC_DB_HOST'] as string,
+  username: import.meta.env['PUBLIC_DB_USERNAME'] as string,
+  password: import.meta.env['PUBLIC_DB_PASSWORD'] as string,
 } satisfies Config
 
+const connection = connect(config)
+
 export const getChoresQuery = async (): Promise<string[]> => {
-  const connection = connect(config)
   const results = await connection.execute('SELECT list FROM chores LIMIT 1')
   return (results.rows[0] as { list: string }).list.split(', ')
 }
 
 export const updateChores = async (chores: string): Promise<void> => {
-  const connection = connect(config)
   await connection.execute('UPDATE chores SET list = ? WHERE id = 1', [chores])
 }
 
