@@ -4,14 +4,26 @@ import {
   updateChores,
 } from '../utils/chores.utils.ts'
 
+const SUPER_SECRET_UPDATE_PASSWORD = import.meta.env[
+  'PUBLIC_SUPER_SECRET_UPDATE_PASSWORD'
+] as string
+
 const todos = await getTodos()
 const dbList = await getChoresQuery()
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>,
+): Promise<void> => {
   e.preventDefault()
 
   const formData = new FormData(e.target as HTMLFormElement)
   const formJson = Object.fromEntries(formData.entries())
+
+  const userPassword = window.prompt('super secret password:')
+  if (userPassword !== SUPER_SECRET_UPDATE_PASSWORD) {
+    alert('nice try')
+    return
+  }
 
   await updateChores(formJson['chores-input'] as string)
   window.history.replaceState({}, '', '/')
