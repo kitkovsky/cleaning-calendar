@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "pnpm prettier --plugin=prettier-plugin-astro --check ."
   },
   "dependencies": {
     "@astrojs/react": "^3.0.2",
