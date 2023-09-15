@@ -3,8 +3,8 @@ import { Image } from 'astro:assets'
 import MainLayout from '../components/layouts/MainLayout.astro'
 import sand from '../images/sand.gif'
 import subway from '../images/subway.gif'
-import { getTodos } from '../utils/chores.utils'
-import { getNextWeekendDates, isNowWeekend } from '../utils/weekend.utils'
+import { getTodos } from '../utils/chores.utils.ts'
+import { getNextWeekendDates, isNowWeekend } from '../utils/weekend.utils.ts'
 
 const todos = await getTodos()
 const nextWeekend = getNextWeekendDates()
