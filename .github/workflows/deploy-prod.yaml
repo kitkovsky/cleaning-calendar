@@ -17,15 +17,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-
-      - name: Setup node.js
-        uses: actions/setup-node@v3.8.1
-        with:
-          cache: 'pnpm'
 
       - name: Install vercel CLI
         run: pnpm install --global vercel@latest
