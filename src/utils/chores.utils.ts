@@ -12,12 +12,16 @@ const config = {
 const connection = connect(config)
 
 export const getChoresQuery = async (): Promise<string[]> => {
-  const results = await connection.execute('SELECT list FROM chores LIMIT 1')
+  const results = await connection.execute(
+    'SELECT list FROM cal_chores LIMIT 1',
+  )
   return (results.rows[0] as { list: string }).list.split(', ')
 }
 
 export const updateChores = async (chores: string): Promise<void> => {
-  await connection.execute('UPDATE chores SET list = ? WHERE id = 1', [chores])
+  await connection.execute('UPDATE cal_chores SET list = ? WHERE id = 1', [
+    chores,
+  ])
 }
 
 export const getTodos = async (): Promise<
