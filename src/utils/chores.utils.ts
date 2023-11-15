@@ -1,27 +1,26 @@
-import { connect, type Config } from '@planetscale/database'
+import { createClient } from '@libsql/client'
 import { getCurrentWeekNumber } from '../utils/weekend.utils.ts'
 
 const PEOPLE = ['tatiana', 'oskar', 'oliwer']
 
-const config = {
-  host: import.meta.env['PUBLIC_DB_HOST'] as string,
-  username: import.meta.env['PUBLIC_DB_USERNAME'] as string,
-  password: import.meta.env['PUBLIC_DB_PASSWORD'] as string,
-} satisfies Config
-
-const connection = connect(config)
+const client = createClient({
+  url: import.meta.env['PUBLIC_DB_URL'],
+  authToken: import.meta.env['PUBLIC_DB_AUTH_TOKEN'],
+})
 
 export const getChoresQuery = async (): Promise<string[]> => {
-  const results = await connection.execute(
-    'SELECT list FROM cal_chores LIMIT 1',
-  )
-  return (results.rows[0] as { list: string }).list.split(', ')
+  const response = await client.execute('SELECT list from chores')
+  const rows = response.rows as unknown as Array<{ list: string }>
+  const list = rows[0]?.list || ''
+
+  return list.split(', ')
 }
 
 export const updateChores = async (chores: string): Promise<void> => {
-  await connection.execute('UPDATE cal_chores SET list = ? WHERE id = 1', [
-    chores,
-  ])
+  await client.execute({
+    sql: 'UPDATE chores SET list = ? WHERE id = 1',
+    args: [chores],
+  })
 }
 
 export const getTodos = async (): Promise<
